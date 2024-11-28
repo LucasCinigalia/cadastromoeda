@@ -25,6 +25,7 @@ public class MoedaDAO {
 		boolean retorno = false; // Estamos partindo do presuposto de que a moeda ainda não está cadastrada. Se ela estiver, a linha 29 vai mudar para true.
 		String query = "SELECT idMoeda FROM moeda WHERE nome = '" + moedaVO.getNome() + "' AND pais = '" + moedaVO.getPais() + "' AND ano = " + moedaVO.getAno(); // Precisa sempre colocar as aspas simples nas Strings para ficar no padrão para o MySQL.
 		// Foi utilizado nome, pais e ano, pensando que ainda não temos o ID para buscar, pois ele é único. Uma moeda com o mesmo nome, país e ano será uma moeda repetida.
+		
 		try{
 			resultado = stmt.executeQuery(query);
 			if(resultado.next()){
@@ -42,19 +43,19 @@ public class MoedaDAO {
 	}
 	
 	public MoedaVO cadastrarMoedaDAO(MoedaVO moedaVO) {
-		String query =  "INSERT INTO moeda (nome, pais, ano, valor, detalhes, dataCadastro, imagem) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"; // ? São mascaras, para depois informar o valor utilizando o numero de cada ?.
+		String query =  "INSERT INTO moeda (nome, pais, ano, valor, detalhes, dataCadastro, imagem) VALUES (?, ?, ?, ?, ?, ?, ?)"; // ? São mascaras, para depois informar o valor utilizando o numero de cada ?.
 		Connection conn = Banco.getConnection();
 		PreparedStatement pstmt = Banco.getPreparedStatementWithPk(conn, query); // Para pegar um Prepared Statement preciso já ter informado qual a query que quero executar, por isso a query veio antes.
 		ResultSet resultado = null;
 		
 		try {
-			pstmt.setString(2, moedaVO.getNome()); // Nesses casos, as aspas simples são feitas automaticamente.
-			pstmt.setString(3, moedaVO.getPais());
-			pstmt.setInt(4, moedaVO.getAno());
-			pstmt.setDouble(5, moedaVO.getValor());
-			pstmt.setString(6, moedaVO.getDetalhes());
-			pstmt.setObject(7, Date.valueOf(LocalDate.now()));
-			pstmt.setBytes(8, moedaVO.getImagem());
+			pstmt.setString(1, moedaVO.getNome()); // Nesses casos, as aspas simples são feitas automaticamente.
+			pstmt.setString(2, moedaVO.getPais());
+			pstmt.setInt(3, moedaVO.getAno());
+			pstmt.setDouble(4, moedaVO.getValor());
+			pstmt.setString(5, moedaVO.getDetalhes());
+			pstmt.setObject(6, Date.valueOf(LocalDate.now()));
+			pstmt.setBytes(7, moedaVO.getImagem());
 			pstmt.execute(); //Um INSERT utilizando preparedStatement, só precisamos utilizar o execute.
 			resultado = pstmt.getGeneratedKeys(); // Esse método passará o ID
 			if(resultado.next()) { //Esse if serve para se receber alguma coisa no resultado, ele vai setar o IdMoeda com o valor;
